@@ -471,6 +471,7 @@ footer{margin-top:30px;padding:40px 20px;text-align:center;border-top:1px solid 
   <a class="navlink" data-target="sec-briefing">BRIEFING</a>
   <a class="navlink" data-target="sec-finance">FINANCE</a>
   <a class="navlink" data-target="sec-docs">DOCS</a>
+  <a class="navlink" data-target="sec-guides">GUIDES</a>
   <a class="navlink" data-target="sec-brands">BRANDS</a>
   <a class="navlink" data-target="sec-gallery">GALLERY</a>
   <a class="navlink" data-target="sec-deck">PITCH</a>
@@ -1009,11 +1010,23 @@ footer{margin-top:30px;padding:40px 20px;text-align:center;border-top:1px solid 
       <div class="tab" data-tab="t-vivi">VIVI SILENT</div>
       <div class="tab" data-tab="t-can">NO CAN DATA</div>
       <div class="tab" data-tab="t-overheat">OVERHEATING</div>
+      <div class="tab" data-tab="t-audio">NO AUDIO OUT</div>
+      <div class="tab" data-tab="t-gps">NO GPS LOCK</div>
+      <div class="tab" data-tab="t-mesh">NODE OFFLINE</div>
+      <div class="tab" data-tab="t-trims">FUEL TRIMS HIGH</div>
+      <div class="tab" data-tab="t-power">RANDOM REBOOT</div>
+      <div class="tab" data-tab="t-dash">DASHCAM DOWN</div>
     </div>
     <div class="tabpane active" id="t-nostart"><div class="flow" id="flow-nostart"></div></div>
     <div class="tabpane" id="t-vivi"><div class="flow" id="flow-vivi"></div></div>
     <div class="tabpane" id="t-can"><div class="flow" id="flow-can"></div></div>
     <div class="tabpane" id="t-overheat"><div class="flow" id="flow-overheat"></div></div>
+    <div class="tabpane" id="t-audio"><div class="flow" id="flow-audio"></div></div>
+    <div class="tabpane" id="t-gps"><div class="flow" id="flow-gps"></div></div>
+    <div class="tabpane" id="t-mesh"><div class="flow" id="flow-mesh"></div></div>
+    <div class="tabpane" id="t-trims"><div class="flow" id="flow-trims"></div></div>
+    <div class="tabpane" id="t-power"><div class="flow" id="flow-power"></div></div>
+    <div class="tabpane" id="t-dash"><div class="flow" id="flow-dash"></div></div>
   </div>
 </section>
 
@@ -1120,6 +1133,38 @@ footer{margin-top:30px;padding:40px 20px;text-align:center;border-top:1px solid 
     <span class="section-sub">EVERY SPEC, GUIDE &amp; DIAGRAM</span>
   </div>
   <div class="grid g3" id="docGrid"></div>
+</section>
+
+<!-- ============ 16b. GUIDES (API + Pi5 setup, embedded) ============ -->
+<section class="section" id="sec-guides">
+  <div class="section-head">
+    <span class="section-index">16+</span>
+    <span class="section-title">Knowledge Base</span>
+    <span class="section-sub">API REFERENCE · PI5 SETUP · EMBEDDED</span>
+  </div>
+  <div class="card">
+    <div class="tabs" data-tabs="guides">
+      <div class="tab active" data-tab="g-api">API REFERENCE</div>
+      <div class="tab" data-tab="g-pi5">PI5 SETUP GUIDE</div>
+    </div>
+
+    <div class="tabpane active" id="g-api">
+      <div class="flex between center wrap mb12">
+        <div class="mono dim" style="font-size:12px">Base URL <b style="color:var(--cyan)">http://10.13.12.10:4200</b> · auth: bearer token · all local</div>
+        <span class="pill ok"><span class="dot"></span>v1 · LOCAL ONLY</span>
+      </div>
+      <div class="table-wrap" style="max-height:420px"><table class="dt"><thead><tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Returns</th></tr></thead><tbody id="apiRefBody"></tbody></table></div>
+      <div class="mono dim mt12" style="font-size:11px;line-height:1.7">▸ Example: <span style="color:var(--cyan)">curl -s 10.13.12.10:4200/telemetry/live | jq</span><br>▸ WebSocket stream: <span style="color:var(--cyan)">ws://10.13.12.10:4200/ws/telemetry</span> — pushes CAN frames @ 10Hz<br>▸ All endpoints are local-only; nothing is exposed to the public internet.</div>
+    </div>
+
+    <div class="tabpane" id="g-pi5">
+      <div class="flex between center wrap mb12">
+        <div class="mono dim" style="font-size:12px">Target: Raspberry Pi 5 (8GB) · NVMe boot · Drifter OS</div>
+        <span class="pill info"><span class="dot"></span>~25 MIN</span>
+      </div>
+      <div id="pi5Setup"></div>
+    </div>
+  </div>
 </section>
 
 <!-- ============ 17. BRANDS ============ -->
@@ -1813,7 +1858,13 @@ window.MZ = (function () {
     "flow-nostart": [["start","🔑 Key on — no crank"],["decision","Dash lights / 12V present?"],["action","NO → Check battery (12.6V), B+ ground, main fuse"],["decision","Crank but no start?"],["action","Check P0335 crank sensor + fuel pressure"],["end","✓ Isolate: starter / immobiliser / fuel"]],
     "flow-vivi": [["start","🔇 Vivi not responding"],["decision","vivi-core service up?"],["action","NO → systemctl restart vivi-core; check logs"],["decision","Mic detected (arecord -l)?"],["action","Check ReSpeaker USB + wakeword svc"],["end","✓ STT→LLM→TTS chain restored"]],
     "flow-can": [["start","📡 No CAN data"],["decision","HAT detected (dmesg | grep mcp)?"],["action","NO → Check SPI overlay + power"],["decision","candump can0 shows frames?"],["action","Verify 120Ω term + OBD pins 6/14 @ 500kbps"],["end","✓ Bus live — frames flowing"]],
-    "flow-overheat": [["start","🌡️ Coolant > 100°C"],["decision","Coolant level OK?"],["action","NO → Top up; inspect plastic crossover pipe"],["decision","Fans engaging?"],["action","Check fan relay + P0116 sensor"],["end","✓ Stop if >110°C — risk of head warp"]]};
+    "flow-overheat": [["start","🌡️ Coolant > 100°C"],["decision","Coolant level OK?"],["action","NO → Top up; inspect plastic crossover pipe"],["decision","Fans engaging?"],["action","Check fan relay + P0116 sensor"],["end","✓ Stop if >110°C — risk of head warp"]],
+    "flow-audio": [["start","🔈 No audio output"],["decision","piper-tts service up?"],["action","NO → systemctl restart piper-tts"],["decision","aplay -l lists device?"],["action","Check amp 5V + speaker wiring; set default sink"],["end","✓ TTS audible — chain restored"]],
+    "flow-gps": [["start","🛰️ No GPS fix"],["decision","gps-daemon receiving NMEA?"],["action","NO → Check UART GPIO14/15 wiring + 9600 baud"],["decision","Antenna has sky view?"],["action","Relocate active antenna to roof; wait 60s cold fix"],["end","✓ Lock acquired — sats ≥ 4"]],
+    "flow-mesh": [["start","🌐 Node shows offline"],["decision","Ping node IP?"],["action","NO → Check PoE/power + switch port + Wi-Fi"],["decision","mqtt-broker reachable :1883?"],["action","Restart broker; verify client creds + topic ACL"],["end","✓ Node rejoined mesh"]],
+    "flow-trims": [["start","⛽ STFT/LTFT > ±10%"],["decision","Lean (positive) or rich?"],["action","LEAN → Smoke-test vacuum leaks; check MAF (P0101)"],["decision","Fuel pressure in spec?"],["action","RICH → Inspect injectors, O2 sensors (P0420)"],["end","✓ Trims within ±5%"]],
+    "flow-power": [["start","🔌 Pi5 random reboot"],["decision","5V rail steady under load?"],["action","NO → Upsize buck converter; check 8AWG B+/GND"],["decision","Brownout flag in dmesg?"],["action","Add bulk capacitor; isolate from ignition spikes"],["end","✓ Stable across crank events"]],
+    "flow-dash": [["start","🎥 Dashcam not recording"],["decision","dashcam-rec service up?"],["action","NO → systemctl restart dashcam-rec"],["decision","Camera enumerated (v4l2-ctl)?"],["action","Reseat CSI/USB; check storage-gc free space"],["end","✓ Recording to ring buffer"]]};
   Object.keys(FLOWS).forEach(id => {
     const el = $("#" + id); if (!el) return;
     el.innerHTML = FLOWS[id].map((n, i) => `<div class="flow-node ${n[0]}">${n[1]}</div>${i < FLOWS[id].length - 1 ? '<div class="flow-arrow"></div>' : ""}`).join("");
@@ -1874,6 +1925,38 @@ window.MZ = (function () {
   /* ---- BRANDS ---- */
   const BRANDS = [["🎯","MZ1312 Brand Guide","Logo system, palette, voice and the UNCAGED doctrine.","#3B82F6"],["🟣","UNORTHODOXED Brand Guide","Streetwear identity, typography and drop language.","#8B5CF6"],["👻","Ghost Protocol Product Page","Counter-surveillance hardware line and positioning.","#FF8C00"],["📊","Investor Pitch Deck","The ecosystem thesis — sovereignty as a product.","#22C55E"],["📖","Print Lookbook","Editorial lookbook for the current UNORTHODOXED season.","#EC4899"],["🧭","Ecosystem Map","How every project, device and brand interconnects.","#22D3EE"]];
   $("#brandGrid").innerHTML = BRANDS.map(b => `<div class="card doc-card accent-purple" data-demo="${b[1]}" data-search="${b[1]} ${b[2]}"><div class="dh"><span style="font-size:20px">${b[0]}</span><span class="dt">${b[1]}</span></div><div class="dd">${b[2]}</div><div class="mt8"><span class="btn xs ghost" style="border-color:${b[3]};color:${b[3]}">OPEN →</span></div></div>`).join("");
+
+  /* ---- API REFERENCE (embedded) ---- */
+  const API = [
+    ["GET","/health","Service health + uptime summary","{ status, services, uptime }"],
+    ["GET","/telemetry/live","Latest CAN telemetry snapshot","{ rpm, speed, coolant, volt, trims }"],
+    ["GET","/telemetry/history","Time-series telemetry (range query)","[ { ts, ... } ]"],
+    ["GET","/dtc","Active + stored diagnostic codes","[ { code, desc, severity } ]"],
+    ["POST","/dtc/clear","Clear stored DTCs (UDS $14)","{ cleared: n }"],
+    ["GET","/services","All 42 services + status","[ { name, up, pid } ]"],
+    ["POST","/services/:name/restart","Restart a named service","{ ok, name }"],
+    ["POST","/vivi/chat","Send Vivi a message (STT→LLM→TTS)","{ reply, latency_ms }"],
+    ["GET","/vivi/memory","Query Vivi memory store","[ { id, kind, text } ]"],
+    ["GET","/oracle/bets","Today's value bets","[ { match, pick, edge } ]"],
+    ["POST","/oracle/stake","Log a bet to the bankroll engine","{ id, bankroll }"],
+    ["GET","/ghost/rf","Latest RF spectrum scan","{ peaks, noise_floor }"],
+    ["POST","/can/mode","Set CAN toolkit mode","{ mode }"],
+    ["GET","/mesh/nodes","Device mesh node states","[ { host, ip, cpu, ram } ]"],
+    ["POST","/deploy","Trigger deploy to a device","{ job_id, status }"]];
+  const mPill = m => { const c = m === "GET" ? "info" : "warn"; return `<span class="pill ${c}" style="min-width:48px;justify-content:center">${m}</span>`; };
+  $("#apiRefBody").innerHTML = API.map(a => `<tr data-search="${a[1]} ${a[2]}"><td>${mPill(a[0])}</td><td class="mono" style="color:var(--cyan)">${a[1]}</td><td>${a[2]}</td><td class="mono dim">${a[3].replace(/</g,"&lt;")}</td></tr>`).join("");
+
+  /* ---- PI5 SETUP GUIDE (embedded) ---- */
+  const PI5 = [
+    ["Flash Drifter OS","Write the Drifter OS image to an NVMe SSD via the Pi Imager. Enable SSH + set hostname <code>drifter-pi5</code> and a strong password in the imager's advanced options."],
+    ["First boot + harden","Boot from NVMe. <code>sudo apt update &amp;&amp; sudo apt full-upgrade -y</code>. Disable password SSH, install your public key, enable ufw (allow 22, 1883, 4200 on LAN only)."],
+    ["Enable interfaces","<code>sudo raspi-config</code> → enable SPI (CAN HAT), I2C, UART (GPS), and the DSI display. Reboot."],
+    ["Wire the harness","Connect per the Wiring section: 12V→buck→Pi5 USB-C (5V/5A), CAN HAT to OBD pins 6/14, ReSpeaker mic, u-blox GPS to GPIO14/15, 7\" display via DSI."],
+    ["Install the stack","<code>cd ~/drifter &amp;&amp; ./scripts/install.sh</code> — pulls dependencies, sets up the 42 systemd services, mqtt-broker, and the Vivi pipeline (Whisper/Piper/Ollama)."],
+    ["Bring up CAN","<code>sudo ip link set can0 up type can bitrate 500000</code> then <code>candump can0</code> — you should see frames with the ignition on."],
+    ["Verify Vivi","Say the wakeword \"Vivi\". Confirm STT→LLM→TTS round-trip < 500ms via <code>journalctl -u vivi-core -f</code>."],
+    ["Deploy + checklist","Run the Deploy section's full sequence, then walk the Deployment Checklist (press <b>D</b>). Snapshot a backup once green."]];
+  $("#pi5Setup").innerHTML = PI5.map((s, i) => `<div class="check-item" style="cursor:default;align-items:flex-start"><div class="check-box" style="background:var(--blue);border-color:var(--blue);color:#fff">${i + 1}</div><div><div class="ct" style="color:var(--text-hi);font-weight:600;margin-bottom:3px">${s[0]}</div><div class="mono dim" style="font-size:11px;line-height:1.6">${s[1]}</div></div></div>`).join("");
 })();
 </script>
 
