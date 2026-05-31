@@ -81,7 +81,11 @@ python -m http.server 8080   # serve so GLB + API fetches work cleanly
 
 ## The ecosystem
 
-`drifter` · `oracle` · `unorthodoxed` · `mz1312-orchestrator` · `mz1312-dashboard` · `sentient-core` · `mycelium-mapper`
+`drifter` · `sentient-core` (Cortana) · `cortana` · `drifter-app` · `oracle` · `unorthodoxed` · `mz1312` · `mz1312-dashboard`
+
+## Real data, not lorem
+
+Content is sourced from the actual MZ1312 repos — real `drifter-*` services, OBD PIDs/MQTT topics, X-Type AJ-V6 facts (2004 2.5 V6, JF506E, Haldex), device mesh hostnames/IPs (`10.42.0.1`, `192.168.1.116/159`), Vivi's local Ollama pipeline (qwen2.5 / Piper / faster-whisper), the real UNORTHODOXED VOL.04 catalogue, real Oracle model metrics, and the real Drifter HTTP API. Live telemetry/services panels read from the Drifter dashboard API (`http://10.42.0.1:8080`) when the page is opened on-network; otherwise they animate representative values.
 
 ## Design tokens
 
